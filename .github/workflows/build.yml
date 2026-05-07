@@ -3,7 +3,7 @@ name: Build Dumper Binaries
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # 允许你手动点击运行
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,19 +19,20 @@ jobs:
         platform: x64
 
     - name: Build Binaries
+      shell: cmd
       run: |
-        $SRC = "themida_dumper_universal.c"
-        $FLAGS = "-O2", "-s", "-static", "-lntdll"
+        set SRC=themida_dumper_universal.c
+        set FLAGS=-O2 -s -static -lntdll
         
-        # Build x64
-        x86_64-w64-mingw32-gcc $SRC @FLAGS -DDEFAULT_MODE=MODE_THEMIDA   -o themida_dumper_x64.exe
-        x86_64-w64-mingw32-gcc $SRC @FLAGS -DDEFAULT_MODE=MODE_VMPROTECT -o vmprotect_dumper_x64.exe
-        x86_64-w64-mingw32-gcc $SRC @FLAGS -DDEFAULT_MODE=MODE_RUNTIME   -o runtime_dumper_x64.exe
+        :: Build x64
+        x86_64-w64-mingw32-gcc %SRC% %FLAGS% -DDEFAULT_MODE=MODE_THEMIDA   -o themida_dumper_x64.exe
+        x86_64-w64-mingw32-gcc %SRC% %FLAGS% -DDEFAULT_MODE=MODE_VMPROTECT -o vmprotect_dumper_x64.exe
+        x86_64-w64-mingw32-gcc %SRC% %FLAGS% -DDEFAULT_MODE=MODE_RUNTIME   -o runtime_dumper_x64.exe
         
-        # Build x86
-        i686-w64-mingw32-gcc $SRC @FLAGS -DDEFAULT_MODE=MODE_THEMIDA   -o themida_dumper_x86.exe
-        i686-w64-mingw32-gcc $SRC @FLAGS -DDEFAULT_MODE=MODE_VMPROTECT -o vmprotect_dumper_x86.exe
-        i686-w64-mingw32-gcc $SRC @FLAGS -DDEFAULT_MODE=MODE_RUNTIME   -o runtime_dumper_x86.exe
+        :: Build x86
+        i686-w64-mingw32-gcc %SRC% %FLAGS% -DDEFAULT_MODE=MODE_THEMIDA   -o themida_dumper_x86.exe
+        i686-w64-mingw32-gcc %SRC% %FLAGS% -DDEFAULT_MODE=MODE_VMPROTECT -o vmprotect_dumper_x86.exe
+        i686-w64-mingw32-gcc %SRC% %FLAGS% -DDEFAULT_MODE=MODE_RUNTIME   -o runtime_dumper_x86.exe
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
